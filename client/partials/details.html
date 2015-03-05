@@ -1,0 +1,14 @@
+<div class="container">
+  <div ng-controller="DetailsCtrl">
+    <h2>Hey {{log._id}}</h2>
+    <ul>
+      <li>Id: {{log._id}}</li>
+      <li>State: {{log.state}}</li>
+      <li>Date: {{log.date}}</li>
+    </ul>
+    <canvas id="line" class="chart chart-line" data="data"
+  labels="labels" legend="true" series="series"
+  click="onClick">
+</canvas> 
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<div class="container">
+  <div ng-controller="HomeCtrl">
+    <div class="panel panel-default">
+    <div ng-if="!isAuthenticated()">
+    <div class="panel-heading text-center">Airfoil Optimizer App</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <h2 class="text-center">Welcome to the Airfoil App</h2>
+            <div class="row">
+              <div class="col-sm-3"></div>  
+              <div class="col-sm-3">
+                <p class="text-center"><a class="btn btn-primary" href="#/login">Log In</a></p>
+              </div>
+              <div class="col-sm-3">
+                <p class="text-center"><a class="btn btn-primary" href="#/signup">Sign Up</a></p>
+              </div>
+              <div class="col-sm-3"></div>
+            </div>
+          </div>  
+        </div>
+      </div>
+    </div>
+
+    <div ng-if="isAuthenticated()">  
+      <div class="panel-heading text-center">Airfoil Optimizer App</div>
+      <div class="panel-body">
+        <div ng-if="!processing" class="row">
+          <div class="col-sm-12">
+            <h2 class="text-center">Welcome to the Airfoil App</h2>
+
+            <form class="col-sm-8 col-md-offset-2" method="post" ng-submit="startSimulation()" name="startForm">
+              </br>
+              <label class="col-sm-4">Chord: {{params.chord}}</label><input name="chord" class="col-sm-8" type="range" min="0" max="100" ng-model="params.chord" /></br>
+              <label class="col-sm-4">Airspeed: {{params.airSpeed}}</label><input name="airSpeed" class="col-sm-8"t type="range" min="0" max="100" ng-model="params.airSpeed" /></br>
+              <button type="submit" ng-disabled="startForm.$invalid" class="btn btn-lg btn-block btn-primary">Start Simulation</button>
+            </form>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <h2 class="text-center">Previous simulations</h2>
+            <table>
+            <thead>
+            <tr class="row">
+              <th class="col-sm-3 text-center">Details</th>
+              <th class="col-sm-3 text-center">Recovery</th>
+              <th class="col-sm-3 text-center">Status</th>
+              <th class="col-sm-3 text-center">Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-class-even="'even'" class="row" ng-repeat="log in logs">
+              <td class="col-sm-3">
+                <p class="text-center"><a class="btn btn-primary" href="#/details/{{log._id}}">Details</a></p>
+              </td>
+              <td class="col-sm-3">
+                <p  ng-if="!log.state" class="text-center"><a class="btn btn-primary" href="#">Recover</a></p>
+              </td>
+              <td ng-if="log.state" class="col-sm-3 text-center text-success" >{{log.state}}</td>
+              <td ng-if="!log.state" class="col-sm-3 text-center text-danger" >{{log.state}}</td>
+              <td class="col-sm-3 text-center text-primary">{{log.date}}</td>
+            </tr>
+            </tbody>
+            </table>
+          </div>  
+        </div>
+      </div>
+    </div>
+    </div> 
+
+  </div>
+</div>
