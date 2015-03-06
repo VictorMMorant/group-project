@@ -57,7 +57,7 @@ function respWork(arguments) {
 	 
 	 
 	 //Call nimrod to calculate the optimum parameters
-	 proc.exec('nimrodo -f optimize.shd '+, function (error, stdout, stderr) {
+	 proc.exec('nimrodo -f optimize.shd ', function (error, stdout, stderr) {
 		if (error) {
 			console.log(error.stack);
 			console.log('Error code: '+error.code);
