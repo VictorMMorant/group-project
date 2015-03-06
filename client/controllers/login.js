@@ -1,5 +1,4 @@
-angular.module('MyApp')
-  .controller('LoginCtrl', function($scope, $alert, $auth) {
+angular.module('MyApp').controller('LoginCtrl', function($scope, $alert, $auth) {
     $scope.login = function() {
       $auth.login({ email: $scope.email, password: $scope.password })
         .then(function() {

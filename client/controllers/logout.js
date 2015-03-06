@@ -1,5 +1,4 @@
-angular.module('MyApp')
-  .controller('LogoutCtrl', function($auth, $alert) {
+angular.module('MyApp').controller('LogoutCtrl', function($auth, $alert) {
     if (!$auth.isAuthenticated()) {
         return;
     }

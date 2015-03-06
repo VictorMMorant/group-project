@@ -1,12 +1,31 @@
-angular.module('MyApp')
-  .controller('DetailsCtrl', function($scope, $auth,$http,$stateParams) {
-      $scope.log = {};
-      $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-      $scope.series = ['Series A', 'Series B'];
+angular.module('MyApp').controller('DetailsCtrl', function($scope, $auth,$http,$stateParams) {
       $scope.data = [
-        [65, 59, 80, 81, 56, 55, 40],
-        [28, 48, 40, 19, 86, 27, 90]
+          {x: 0, value: 4, otherValue: 14},
+          {x: 1, value: 8, otherValue: 1},
+          {x: 2, value: 15, otherValue: 11},
+          {x: 3, value: 16, otherValue: 147},
+          {x: 4, value: 23, otherValue: 87},
+          {x: 5, value: 42, otherValue: 45}
       ];
+
+      $scope.options = {
+        axes: {
+          x: {key: 'x', labelFunction: function(value) {return value;}, type: 'linear', min: 0, max: 5, ticks: 5},
+          y: {type: 'linear', min: 0, max: 150, ticks: 5},
+          y2: {type: 'linear', min: 0, max: 150, ticks: 5}
+        },
+        series: [
+          {y: 'value', color: 'steelblue', thickness: '2px', type: 'area', striped: true, label: 'Simulation 1'},
+          {y: 'otherValue', axis: 'y2', color: 'red', type: 'area', striped: true, label: 'Simulation 2'}
+        ],
+        lineMode: 'linear',
+        tension: 0.7,
+        tooltip: {mode: 'scrubber', formatter: function(x, y, series) {return 'Iteration: '+x;}},
+        drawLegend: true,
+        drawDots: true,
+        columnsHGap: 5
+        }
+
       $http.get("/details/"+$stateParams.id).
       success(function(data, status, headers, config) {
         console.log(data);
@@ -17,26 +36,3 @@ angular.module('MyApp')
       });
     
   });
-   function Params() {
-
-    var chord = 50;
-    var airSpeed = 50;
-
-    this.__defineGetter__("chord", function () {
-        return chord;
-    });
-
-    this.__defineSetter__("chord", function (val) {        
-        chord = parseInt(val);
-    });
-
-    this.__defineGetter__("airSpeed", function () {
-        return airSpeed;
-    });
-
-    this.__defineSetter__("airSpeed", function (val) {        
-        airSpeed = parseInt(val);
-    });
-
-
-}
