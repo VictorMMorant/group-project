@@ -2,14 +2,21 @@ parameter angle float range from 0 to 4
 parameter radius float range from 50 to 100
 parameter thickness float range from 1 to 20
 constraint radius>0
-task main
 
+task main
+execute echo "$1">abc
 //Calculate L/D
 execute ./calculateRatio.sh $angle $radius $thickness
 copy ratio output.$jobname
+//Store some data of the iteration to send to the monitor and log system
+execute echo "$angle\n$radius\n$thickness">>ratio
+//Send to the broker
+execute node send.js 
+
 endtask
+
 method simplex
-starts 10
+starts 1
 tolerance 0.01
 endstarts
 endmethod

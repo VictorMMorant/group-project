@@ -5,7 +5,7 @@ var prc=require(child)
 ,Q=require('q')
 ,url=process.argv[2]
 ,verbose=(process.argv[3]==='true')
-,loadHost = process.argv[4]
+			,loadHost = process.argv[4]
 ,loadPort = process.argv[5]
 ,workerID= randString()
 ,disp= 'I_am_ready'
@@ -45,10 +45,19 @@ function respWork(arguments) {
 	 	console.log('worker ( '+workerID+' ) has received request from '+clientServed);
 	 	showArguments(args);
 	 }
-	 //Create a variable to store the message to send to the broker
-	 var aux;
+	 
+	 //Write a file to specify the address of the broker and the client to serve
+	 fs.writeFile('url',url+"\n"+clientServed,function(err,data) {
+	if (err) {
+		return console.log(err);
+	}
+	console.log('It\'s saved!')
+	});
+	 
+	 
+	 
 	 //Call nimrod to calculate the optimum parameters
-	 proc.exec('nimrodo -f optimize.shd', function (error, stdout, stderr) {
+	 proc.exec('nimrodo -f optimize.shd '+, function (error, stdout, stderr) {
 		if (error) {
 			console.log(error.stack);
 			console.log('Error code: '+error.code);

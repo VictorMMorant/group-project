@@ -15,6 +15,5 @@ L=$(echo "-1*(1/2)*$Cl*$p*$v^2*(c($angle)+(2*($chord/100)*$r)*s($angle))*2*($cho
 D=$(echo "(1/2)*$Cd*$p*$v^2*((2*($chord/100)*$r)/c($angle))*($chord/100)*$t"|bc -l)
 
 rat=$(echo "scale=5;$L/$D"|bc)
-echo $rat>>ratios
 echo $rat>ratio
 exit
