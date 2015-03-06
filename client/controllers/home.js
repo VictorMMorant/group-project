@@ -15,7 +15,7 @@ angular.module('MyApp')
         console.log("Error"+data);
       });
     };
-
+    
   	$http.get("/log").
   	  success(function(data, status, headers, config) {
   	  	console.log(data);

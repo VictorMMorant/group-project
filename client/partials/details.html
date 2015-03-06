@@ -1,11 +1,14 @@
 <div class="container">
-  <div ng-controller="DetailsCtrl">
-    <h2>Hey {{log._id}}</h2>
-    <ul>
-      <li>Id: {{log._id}}</li>
-      <li>State: {{log.state}}</li>
-      <li>Date: {{log.date}}</li>
-    </ul>
-    <linechart data="data" options="options" mode="" width="600" height="300"></linechart> 
+  <div ng-controller="DetailsCtrl" class="panel panel-default">
+    <center>
+      <h2>Hey {{log._id}}</h2>
+      <ul>
+        <li>Id: {{log._id}}</li>
+        <li>State: {{log.state}}</li>
+        <li>Date: {{log.date}}</li>
+      </ul>
+      <linechart data="data" options="options" mode="" width="600" height="300"></linechart>
+      <linechart data="dataWing" options="optionsWing" mode="" width="600" height="300"></linechart>
+    </center>
   </div>
 </div>
