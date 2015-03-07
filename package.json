@@ -1,6 +1,6 @@
 {
   "name": "satellizer",
-  "main": "server.js",
+  "main": "lbclient.js",
   "dependencies": {
     "async": "^0.9.0",
     "bcryptjs": "^2.1.0",
