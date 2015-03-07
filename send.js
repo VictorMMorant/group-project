@@ -23,4 +23,4 @@ fs.readFile('ratio','utf8',function(err,data) {
 var responseJSON={iteration:{ratio:dat[0], angle:dat[1], radius:dat[2] ,thickness:dat[3]}}
 var response=JSON.stringify(responseJSON)
 //Send the optimum parameters to the broker
-responder.send([clientServed,'','OK',response]);
+responder.send([clientServed,'','Iteration',response]);

@@ -76,11 +76,21 @@ function responseB(arguments) {
 	else if(distribution=='equitable') worker.load=count[args[0]];
   	queue.enq(worker);
   	if(verbose){
-  		console.log('Sending to client:');
+  		console.log('Sending to client the output of nimrod. Execution finalized:');
   		showArguments([args[2],'',args[4]]);
   	}
 	frontend.send([args[2],'',args[4]]);
   }
+
+  else if(args[4]=="Iteration"){
+  	if(verbose){
+  		console.log('Sending to client data from the last iteration:');
+  		showArguments([args[2],'',args[4]]);
+  	}
+	frontend.send([args[2],'',args[5]]);
+  }  
+
+
   if (messagequeue.length>0){
     var msg=messagequeue.shift();
     var worker=queue.deq();
