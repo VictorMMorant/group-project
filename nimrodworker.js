@@ -1,5 +1,5 @@
 var zmq = require('zmq')
-var prc=require(child)
+var prc=require('child_process')
 ,responder = zmq.socket('req')
 ,estado = zmq.socket('rep')
 ,Q=require('q')
