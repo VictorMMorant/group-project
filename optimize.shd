@@ -4,12 +4,12 @@ parameter thickness float range from 1 to 20
 constraint radius>0
 
 task main
-execute echo "$1">abc
 //Calculate L/D
 execute ./calculateRatio.sh $angle $radius $thickness
 copy ratio output.$jobname
 //Store some data of the iteration to send to the monitor and log system
 execute echo "$angle\n$radius\n$thickness">>ratio
+execute echo "$angle\t$radius\t$thickness\n">>zas
 //Send to the broker
 execute node send.js 
 

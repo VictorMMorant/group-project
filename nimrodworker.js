@@ -5,11 +5,12 @@ var prc=require('child_process')
 ,Q=require('q')
 ,url=process.argv[2]
 ,verbose=(process.argv[3]==='true')
-			,loadHost = process.argv[4]
+,loadHost = process.argv[4]
 ,loadPort = process.argv[5]
 ,workerID= randString()
 ,disp= 'I_am_ready'
 ,serviceDone='OK'
+,fs=require("fs")
 ,count=0;
 
 function onMessageOf(socket,cb) {
@@ -47,27 +48,23 @@ function respWork(arguments) {
 	 }
 	 
 	 //Write a file to specify the address of the broker and the client to serve
-	 fs.writeFile('url',url+"\n"+clientServed,function(err,data) {
-		if (err) {
-			return console.log(err);
-		}
-		console.log('It\'s saved!')
-	 });
-	 
-	 
-	 
-	 Call nimrod to calculate the optimum parameters
-	 proc.exec('nimrodo -f optimize.shd ', function (error, stdout, stderr) {
+	 fs.writeFileSync('./url',url+"\n"+clientServed+"\n"+workerID);
+	 responder.close()
+	 //Call nimrod to calculate the optimum parameters
+	 prc.exec('nimrodo -f optimize.shd ', function (error, stdout, stderr) {
 		if (error) {
 			console.log(error.stack);
 			console.log('Error code: '+error.code);
 			console.log('Signal received: '+error.signal);
 		}
 		aux=stdout;
+		console.log(aux)
 	 });
+
 	 //Send the optimum parameters to the broker
-	 responder.send([clientServed,'',serviceDone,aux]);
+	 //responder.send([clientServed,'',serviceDone,aux]);
 	 //responder.send([clientServed,'',serviceDone,getLoad()]);
+	responder.connect(url);
 	 if(verbose){
 	 	console.log('worker ( '+workerID+' ) has sent its reply:');
 	 	showArguments([clientServed,'',serviceDone,getLoad()]);
