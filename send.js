@@ -17,3 +17,4 @@ var responseJSON={iteration:{ratio:dat[0], angle:dat[1], radius:dat[2] ,thicknes
 var response=JSON.stringify(responseJSON)
 //Send the optimum parameters to the broker
 responder.send([clientServed,'','Iteration',response]);
+responder.close();

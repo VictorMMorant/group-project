@@ -48,15 +48,15 @@ function respWork(arguments) {
 	 
 	 //Write a file to specify the address of the broker and the client to serve
 	 fs.writeFile('url',url+"\n"+clientServed,function(err,data) {
-	if (err) {
-		return console.log(err);
-	}
-	console.log('It\'s saved!')
-	});
+		if (err) {
+			return console.log(err);
+		}
+		console.log('It\'s saved!')
+	 });
 	 
 	 
 	 
-	 //Call nimrod to calculate the optimum parameters
+	 Call nimrod to calculate the optimum parameters
 	 proc.exec('nimrodo -f optimize.shd ', function (error, stdout, stderr) {
 		if (error) {
 			console.log(error.stack);
@@ -94,12 +94,5 @@ function showArguments(a) {
 
 
 function getLoad() {
-  var fs     = require('fs')//Este código está tal cual. 
-  , data   = fs.readFileSync("/proc/loadavg") //version sincrona
-  , tokens = data.toString().split(' ')
-  , min1   = parseFloat(tokens[0])+0.01
-  , min5   = parseFloat(tokens[1])+0.01
-  , min15  = parseFloat(tokens[2])+0.01
-  , m      = min1*10 + min5*2 + min15;
-  return m;
+  return 10;
 }

@@ -12,16 +12,42 @@ console.log('client ( '+requester['identity']+' ) connected to '+process.argv[2]
 
 function onMessageOf(socket,cb) {
 	socket.once('message', function() {
+    console.log("Here, I'm !");
 		cb(null,arguments);
   	});
 }
 var reqOf=Q.nfbind(onMessageOf);
 
 var request=reqOf(requester).then(processResponse);
+
 function processResponse(arguments) {
-	var args = Array.apply(null, arguments);
-	console.log('client ( '+requester['identity']+' ) has received reply: "'+args[0]+'"');
-	request = reqOf(requester).then(processResponse);
+	
+  var args = Array.apply(null, arguments);
+	
+  console.log('client ( '+requester['identity']+' ) has received reply: "'+args[0]+'"');
+
+  console.log(JSON.parse(args[0])._id);
+  Log.findByIdAndUpdate(JSON.parse(args[0])._id,{ $set : { iterations: JSON.parse(args[0]).iterations}},function(err, result){
+        if(err){
+            console.log(err);
+        }
+        
+        result.save(function(err) {
+          if (err)
+            console.log('error')
+          else {
+            //requester.send(JSON.stringify(result));
+
+            console.log('success')
+            console.log(result);
+          }
+        });
+        
+    });
+  request = reqOf(requester).then(processResponse);
+
+  
+
 }
 
 function randString () {
@@ -144,9 +170,17 @@ function createToken(user) {
 
 
 app.post('/start/', function(req,res){
-	console.log("Chord: "+req.body.chord+"\nairSpeed:"+req.body.airSpeed);
-	res.status(200).end();
-	requester.send([req.body.chord,req.body.airSpeed,new Log({})]);
+	var log = new Log({
+    chord: req.body.chord,
+    L: req.body.L
+  });
+
+  log.save(function() {
+    res.json(log);
+  });
+
+  requester.send(JSON.stringify(log));
+
 });
 
 /** ROUTES */

@@ -31,8 +31,8 @@
 
             <form class="col-sm-8 col-md-offset-2" method="post" ng-submit="startSimulation()" name="startForm">
               </br>
-              <label class="col-sm-4">Chord: {{params.chord}}</label><input name="chord" class="col-sm-8" type="range" min="0" max="100" ng-model="params.chord" /></br>
-              <label class="col-sm-4">Airspeed: {{params.airSpeed}}</label><input name="airSpeed" class="col-sm-8"t type="range" min="0" max="100" ng-model="params.airSpeed" /></br>
+              <label class="col-sm-4">Chord: {{params.chord}}</label><input name="chord" class="col-sm-8" type="range" min="1" max="5" ng-model="params.chord" /></br>
+              <label class="col-sm-4">Length: {{params.L}}</label><input name="L" class="col-sm-8"t type="range" min="1" max="10" ng-model="params.L" /></br>
               <button type="submit" ng-disabled="startForm.$invalid" class="btn btn-lg btn-block btn-primary">Start Simulation</button>
             </form>
           </div>  

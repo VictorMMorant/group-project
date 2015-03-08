@@ -38,19 +38,63 @@ if(verbose) console.log('worker ( '+workerID+' ) has sent READY msg: "'+disp+'".
 var request=reqOf(responder).then(respWork); 
 
 function respWork(arguments) {
+	
 	 var args = Array.apply(null, arguments);
 	 var clientServed=args[0];
 	 if(verbose){
 	 	console.log('worker ( '+workerID+' ) has received request from '+clientServed);
 	 	showArguments(args);
-	 }
-	 responder.send([clientServed,'',serviceDone,getLoad()]);
-	 if(verbose){
-	 	console.log('worker ( '+workerID+' ) has sent its reply:');
-	 	showArguments([clientServed,'',serviceDone,getLoad()]);
-	 }
-	 request=reqOf(responder).then(respWork);
-	 console.log('worker ( '+workerID+' ) has sent '+(++count)+' replies.');
+	}
+	 
+	 	var log = JSON.parse(args[2].toString());
+
+	 	/* First time default parameters */
+		var previousParameters =  {
+			iteration: 0,
+			aa : 0.1,
+			t : 0.1,
+			value: 0
+		};
+
+	 	if(log.iterations.length > 0) {
+	 		 previousParameters = log.iterations[log.iterations.length - 1];
+	 	}
+	 	
+
+		/*Optimizer
+		* i -> angle of attack
+		* j -> thickness
+		*/
+		if(previousParameters.aa <= Math.PI) {
+			if((previousParameters.t+0.01)*log.chord > 0.4*log.chord) {
+				previousParameters.t = 0;
+				previousParameters.aa+=0.1;
+			} else {
+				previousParameters.t += 0.01*log.chord;
+			}
+
+			//Step
+			previousParameters.value = calculateLiftToDragRatio(previousParameters.aa,log.L,previousParameters.t,log.chord);
+			previousParameters.iteration++;
+			log.iterations.push(previousParameters);
+			responder.send([clientServed,'',"Iteration",JSON.stringify(log)]);
+
+			if(verbose){
+			 	console.log('worker ( '+workerID+' ) has sent its reply:');
+			 	showArguments([clientServed,'',"Iteration",JSON.stringify(log)]);
+		 	}
+	
+		} else {
+			//Finish
+			responder.send([clientServed,'',"Iteration",JSON.stringify(log), "Finish"]);
+						if(verbose){
+			 	console.log('worker ( '+workerID+' ) has sent its reply:');
+			 	showArguments([clientServed,'',"Iteration",JSON.stringify(log), "Finish"]);
+		 	}
+		}
+
+		 request=reqOf(responder).then(respWork);
+		 console.log('worker ( '+workerID+' ) has sent '+(++count)+' replies.');
   }
 
 //auxiliar functions
@@ -71,12 +115,23 @@ function showArguments(a) {
 
 
 function getLoad() {
-  var fs     = require('fs')//Este código está tal cual. 
-  , data   = fs.readFileSync("/proc/loadavg") //version sincrona
-  , tokens = data.toString().split(' ')
-  , min1   = parseFloat(tokens[0])+0.01
-  , min5   = parseFloat(tokens[1])+0.01
-  , min15  = parseFloat(tokens[2])+0.01
-  , m      = min1*10 + min5*2 + min15;
-  return m;
+	return 10;
+}
+
+
+
+/**
+*	cd -> Drag coefficient
+*	cl -> Lift coefficient	
+*	L  -> Length of the wing
+*	t  -> Thickness
+*	c  -> Chord
+*	aa -> Angle of Attack
+*/
+function calculateLiftToDragRatio(aa,L,t,c) {
+	var cd = 0.2 //Empirically
+	var cl = 2 * Math.PI * aa;
+	var lift =  cl*L*Math.cos(aa)*c;
+	var drag =  cd*L*Math.PI*1.1019*t*t * Math.sin(aa)*c ;
+	return lift/drag;
 }

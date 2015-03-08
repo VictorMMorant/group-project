@@ -8,9 +8,8 @@ angular.module('MyApp')
     };
     $scope.startSimulation = function() {
    	  console.log("Start Simulation");
-   	  $http.post("/start",{ chord: $scope.params.chord ,airSpeed: $scope.params.airSpeed }).success(function(data, status, headers, config) {
-        console.log($scope.processing);
-
+   	  $http.post("/start",{ chord: $scope.params.chord ,L: $scope.params.L }).success(function(data, status, headers, config) {
+        console.log("Succes starting the simulation !");
       }).error(function(data, status, headers, config) {
         console.log("Error"+data);
       });
@@ -30,8 +29,8 @@ angular.module('MyApp')
 
   function Params() {
 
-    var chord = 50;
-    var airSpeed = 50;
+    var chord = 3;
+    var L = 5;
 
     this.__defineGetter__("chord", function () {
         return chord;
@@ -41,12 +40,12 @@ angular.module('MyApp')
         chord = parseInt(val);
     });
 
-    this.__defineGetter__("airSpeed", function () {
-        return airSpeed;
+    this.__defineGetter__("L", function () {
+        return L;
     });
 
-    this.__defineSetter__("airSpeed", function (val) {        
-        airSpeed = parseInt(val);
+    this.__defineSetter__("L", function (val) {        
+        L = parseInt(val);
     });
 
 

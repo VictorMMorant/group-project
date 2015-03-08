@@ -68,27 +68,19 @@ function responseB(arguments) {
   	queue.enq(worker);
   	count[args[0]]=0;
   }
-  else if(args[4]=="OK"){
-    	count[args[0]]++;
-	var worker={};
-  	worker.id=args[0];
-  	if(distribution=='lowerLoad') worker.load=args[5];
-	else if(distribution=='equitable') worker.load=count[args[0]];
-  	queue.enq(worker);
-  	if(verbose){
-  		console.log('Sending to client the output of nimrod. Execution finalized:');
-  		showArguments([args[2],'',args[4]]);
-  	}
-	frontend.send([args[2],'',args[4]]);
-  }
-
   else if(args[4]=="Iteration"){
-  	if(verbose){
-  		console.log('Sending to client data from the last iteration:');
-  		showArguments([args[2],'',args[4]]);
-  	}
-	frontend.send([args[2],'',args[5]]);
-  }  
+      	count[args[0]]++;
+  	var worker={};
+    	worker.id=args[0];
+    	if(distribution=='lowerLoad') worker.load=args[5];
+  	else if(distribution=='equitable') worker.load=count[args[0]];
+    	queue.enq(worker);
+    	if(verbose){
+    		console.log('Sending to client data from the last iteration:');
+    		showArguments([args[2],'',args[5]]);
+    	}
+  	 frontend.send([args[2],'',args[5]]);
+  }
 
 
   if (messagequeue.length>0){
