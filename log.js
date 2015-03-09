@@ -7,7 +7,7 @@ var LogSchema   = new Schema({
 	],
 	chord: Number,
 	L: Number,
-	state: Boolean,
+	status: Boolean,
     date: { type: Date, default: Date.now }
 });
 

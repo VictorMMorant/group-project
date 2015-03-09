@@ -1,12 +1,4 @@
 angular.module('MyApp').controller('DetailsCtrl', function($scope, $auth,$http,$stateParams) {
-      $scope.data = [
-          {x: 0, value: 4},
-          {x: 1, value: 8},
-          {x: 2, value: 15},
-          {x: 3, value: 16},
-          {x: 4, value: 23},
-          {x: 5, value: 42}
-      ];
       
       var computeThicknessDistribution = function(x,t) {
         return t / 0.2 * (0.2969*Math.sqrt(x) + -0.126*x + -0.3516 *x*x + 0.2843*Math.pow(x,3) + -0.1015*Math.pow(x,4));
@@ -90,6 +82,15 @@ angular.module('MyApp').controller('DetailsCtrl', function($scope, $auth,$http,$
       success(function(data, status, headers, config) {
         console.log(data[0]);
         $scope.log = data[0];
+        for(var i in data[0].iterations) {
+        $scope.data = [
+          {x: i.iteration, value: 4},
+          {x: 1, value: 8},
+          {x: 2, value: 15},
+          {x: 3, value: 16},
+          {x: 4, value: 23},
+          {x: 5, value: 42}
+      ];
       }).
       error(function(data, status, headers, config) {
         console.log("Error: "+ data );

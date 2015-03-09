@@ -1,12 +1,26 @@
 <div class="container">
   <div ng-controller="DetailsCtrl" class="panel panel-default">
     <center>
-      <h2>Hey {{log._id}}</h2>
-      <ul>
-        <li>Id: {{log._id}}</li>
-        <li>State: {{log.state}}</li>
-        <li>Date: {{log.date}}</li>
-      </ul>
+        <h2 class="text-center">Simulation</h2>
+          <table>
+            <thead>
+            <tr class="row">
+              <td class="col-sm-4 text-center">Iteration Details</td>
+              <th class="col-sm-4 text-center">Status</th>
+              <th class="col-sm-4 text-center">Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="row">
+              <td class="col-sm-3">
+                <p class="text-center"><a class="btn btn-primary" href="#/details/{{log._id}}/1">Iteration Details</a></p>
+              </td>
+              <td ng-if="log.status" class="col-sm-4 text-center text-success" >Successful</td>
+              <td ng-if="!log.status" class="col-sm-4 text-center text-danger" >Failed</td>
+              <td class="col-sm-4 text-center text-primary">{{log.date}}</td>
+            </tr>
+            </tbody>
+          </table>
       <linechart data="data" options="options" mode="" width="600" height="300"></linechart>
       <linechart data="dataWing" options="optionsWing" mode="" width="600" height="300"></linechart>
     </center>

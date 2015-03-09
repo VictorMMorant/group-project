@@ -26,8 +26,8 @@ function processResponse(arguments) {
 	
   console.log('client ( '+requester['identity']+' ) has received reply: "'+args[0]+'"');
 
-  console.log(JSON.parse(args[0])._id);
-  Log.findByIdAndUpdate(JSON.parse(args[0])._id,{ $set : { iterations: JSON.parse(args[0]).iterations}},function(err, result){
+  if(!JSON.parse(args[0]).finish) {
+    Log.findByIdAndUpdate(JSON.parse(args[0])._id,{ $set : { iterations: JSON.parse(args[0]).iterations}},function(err, result){
         if(err){
             console.log(err);
         }
@@ -36,7 +36,7 @@ function processResponse(arguments) {
           if (err)
             console.log('error')
           else {
-            //requester.send(JSON.stringify(result));
+            requester.send(JSON.stringify(result));
 
             console.log('success')
             console.log(result);
@@ -44,6 +44,24 @@ function processResponse(arguments) {
         });
         
     });
+  } else {
+      Log.findByIdAndUpdate(JSON.parse(args[0])._id,{ $set : { status: true }},function(err, result){
+        if(err){
+            console.log(err);
+        }
+        
+        result.save(function(err) {
+          if (err)
+            console.log('error')
+          else {
+
+            console.log('success')
+            console.log(result);
+          }
+        });
+        
+    }); 
+  }
   request = reqOf(requester).then(processResponse);
 
   
@@ -172,7 +190,8 @@ function createToken(user) {
 app.post('/start/', function(req,res){
 	var log = new Log({
     chord: req.body.chord,
-    L: req.body.L
+    L: req.body.L,
+    status: false,
   });
 
   log.save(function() {

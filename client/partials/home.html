@@ -55,10 +55,10 @@
                 <p class="text-center"><a class="btn btn-primary" href="#/details/{{log._id}}">Details</a></p>
               </td>
               <td class="col-sm-3">
-                <p  ng-if="!log.state" class="text-center"><a class="btn btn-primary" href="#">Recover</a></p>
+                <p  ng-if="!log.status" class="text-center"><a class="btn btn-primary" href="#">Recover</a></p>
               </td>
-              <td ng-if="log.state" class="col-sm-3 text-center text-success" >{{log.state}}</td>
-              <td ng-if="!log.state" class="col-sm-3 text-center text-danger" >{{log.state}}</td>
+              <td ng-if="log.status" class="col-sm-3 text-center text-success" >Successful</td>
+              <td ng-if="!log.status" class="col-sm-3 text-center text-danger" >Failed</td>
               <td class="col-sm-3 text-center text-primary">{{log.date}}</td>
             </tr>
             </tbody>
