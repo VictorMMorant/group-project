@@ -36,14 +36,16 @@ angular.module('MyApp').controller('DetailsCtrl', function($scope, $auth,$http,$
 
 
       /** Recover Simulation */
-      $scope.recoverSimulation = function() {
-        console.log("Start Simulation");
-        $http.post("/start",{ chord: $scope.params.chord ,L: $scope.params.L }).success(function(data, status, headers, config) {
-          console.log("Succes starting the simulation !");
+      $scope.recoverSimulation = function(id) {
+
+        console.log(id);
+        $http.post("/recover",{ _id: id }).success(function(data, status, headers, config) {
+          console.log("Succes recovering the simulation !");
         }).error(function(data, status, headers, config) {
           console.log("Error"+data);
         });
       };
+      
       $scope.options = {
         axes: {
           x: {key: 'x', labelFunction: function(value) {return value;}, type: 'linear', ticks: 5},

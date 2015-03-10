@@ -203,6 +203,19 @@ app.post('/start/', function(req,res){
 
 });
 
+app.post('/recover/', function(req,res){
+  Log.findById(req.body._id,function(err,result) {
+    
+    if(err) {
+      console.log(err);
+    } else {
+      console.log(JSON.stringify(result));
+      requester.send(JSON.stringify(result));
+    }
+
+  });
+});
+
 /** ROUTES */
 app.get('/details/:id', function(req, res) {
   // Return the list of logs

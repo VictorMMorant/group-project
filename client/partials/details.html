@@ -17,7 +17,9 @@
                 <p class="text-center"><a class="btn btn-primary" href="#/details/{{log._id}}/1">Iteration Details</a></p>
               </td>
               <td class="col-sm-3">
-                <p  ng-if="!log.status" class="text-center"><a class="btn btn-primary" href="#">Recover</a></p>
+                <form class="col-sm-8 col-md-offset-2" method="post" ng-submit="recoverSimulation(log._id)">
+                  <p  ng-if="!log.status" class="text-center"><button type="submit" class="btn btn-lg btn-block btn-primary">Recover</button></p>
+                </form>
               </td>
               <td ng-if="log.status" class="col-sm-3 text-center text-success" >Successful</td>
               <td ng-if="!log.status" class="col-sm-3 text-center text-danger" >Failed</td>

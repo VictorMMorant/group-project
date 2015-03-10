@@ -2,6 +2,7 @@ angular.module('MyApp')
   .controller('HomeCtrl', function($scope, $auth,$http) {
     $scope.logs = [];
   	$scope.params = new Params();
+
     $scope.isAuthenticated = function() {
    	  console.log("isAuthenticated")
       return $auth.isAuthenticated();
@@ -14,6 +15,17 @@ angular.module('MyApp')
         console.log("Error"+data);
       });
     };
+
+    $scope.recoverSimulation = function(id) {
+
+      console.log(id);
+      $http.post("/recover",{ _id: id }).success(function(data, status, headers, config) {
+        console.log("Succes recovering the simulation !");
+      }).error(function(data, status, headers, config) {
+        console.log("Error"+data);
+      });
+    };
+    
     
   	$http.get("/log").
   	  success(function(data, status, headers, config) {
