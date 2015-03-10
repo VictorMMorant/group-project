@@ -24,6 +24,11 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStra
         url: "/details/:id",
         templateUrl: 'partials/details.html',
         controller: 'DetailsCtrl'
+      })
+      .state('details_iteration', {
+        url: "/details/:id/:iteration",
+        templateUrl: 'partials/details_iteration.html',
+        controller: 'DetailsCtrl'
       });
 
     $urlRouterProvider.otherwise('/');

@@ -1,0 +1,37 @@
+<div class="container">
+  <div ng-controller="DetailsIterationCtrl" class="panel panel-default">
+    <center>
+      <h2 class="text-center"><a href="#/details/{{log._id}}">Iteration: {{iteration}}</a></h2>
+      <div class="row" ng-cloak>  
+        <div class="col-sm-6">
+          <linechart data="data" options="options" mode="" width="450" height="300"></linechart>
+        </div>
+        <div class="col-sm-6">
+          <linechart data="dataWing" options="optionsWing" mode="" width="450" height="300"></linechart>
+        </div>
+      </div>
+      <table>
+        <tbody>
+        <tr class="row">
+          <td class="col-sm-6">
+            <p ng-if="first()" class="text-center"><a class="btn btn-primary" href="#/details/{{log._id}}/{{prevIteration}}">Previous</a></p>
+          </td>
+          <td class="col-sm-6">
+            <p  ng-if="finish()" class="text-center"><a class="btn btn-primary" href="#/details/{{log._id}}/{{nextIteration}}">Next</a></p>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="row">
+        <div class="col-sm-12 text-center"><h2>Iteration Details</h2></div>
+      </div>
+      <div class="row">
+        <div class="col-sm-3">Thickness: {{currentT}}</div>
+        <div class="col-sm-3">Angle of Attack: {{currentAA}}</div>
+        <div class="col-sm-3">Chord: {{log.chord}}</div>
+        <div class="col-sm-3">Length: {{log.L}}</div>
+      </div> 
+
+    </center>
+  </div>
+</div>

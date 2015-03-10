@@ -5,9 +5,10 @@
           <table>
             <thead>
             <tr class="row">
-              <td class="col-sm-4 text-center">Iteration Details</td>
-              <th class="col-sm-4 text-center">Status</th>
-              <th class="col-sm-4 text-center">Date</th>
+              <td class="col-sm-3 text-center">Iteration Details</td>
+              <th class="col-sm-3 text-center">Recover</th>
+              <th class="col-sm-3 text-center">Status</th>
+              <th class="col-sm-3 text-center">Date</th>
             </tr>
             </thead>
             <tbody>
@@ -15,14 +16,23 @@
               <td class="col-sm-3">
                 <p class="text-center"><a class="btn btn-primary" href="#/details/{{log._id}}/1">Iteration Details</a></p>
               </td>
-              <td ng-if="log.status" class="col-sm-4 text-center text-success" >Successful</td>
-              <td ng-if="!log.status" class="col-sm-4 text-center text-danger" >Failed</td>
-              <td class="col-sm-4 text-center text-primary">{{log.date}}</td>
+              <td class="col-sm-3">
+                <p  ng-if="!log.status" class="text-center"><a class="btn btn-primary" href="#">Recover</a></p>
+              </td>
+              <td ng-if="log.status" class="col-sm-3 text-center text-success" >Successful</td>
+              <td ng-if="!log.status" class="col-sm-3 text-center text-danger" >Failed</td>
+              <td class="col-sm-3 text-center text-primary">{{log.date}}</td>
             </tr>
             </tbody>
-          </table>
-      <linechart data="data" options="options" mode="" width="600" height="300"></linechart>
-      <linechart data="dataWing" options="optionsWing" mode="" width="600" height="300"></linechart>
+          </table>     
+        <div class="row" ng-cloak>  
+        <div class="col-sm-6">
+          <linechart data="data" options="options" mode="" width="450" height="300"></linechart>
+        </div>
+        <div class="col-sm-6">
+          <linechart data="dataWing" options="optionsWing" mode="" width="450" height="300"></linechart>
+        </div>
+      </div>
     </center>
   </div>
 </div>

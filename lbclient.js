@@ -192,6 +192,7 @@ app.post('/start/', function(req,res){
     chord: req.body.chord,
     L: req.body.L,
     status: false,
+    finish: false
   });
 
   log.save(function() {
@@ -209,7 +210,6 @@ app.get('/details/:id', function(req, res) {
       res.json(log);
   });
 });
-
 
 /** API LOG */
 app.get('/log', function(req, res) {
