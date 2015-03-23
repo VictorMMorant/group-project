@@ -202,7 +202,7 @@ function step(log) {
 		/**Boundaries*/
 		var minAA = 0.1;
 		var incrementAA = 0.05;
-		var maxAA = Math.PI/2;
+		var maxAA = 0.35;
 		var minT = 0.1*log.chord;
 		var incrementT = 0.01*log.chord;
 		var maxT = 0.4*log.chord;
