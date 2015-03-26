@@ -30,34 +30,111 @@ var mini=0.2
 increment=0.05
 maxi=0.301
 res=checkBoundaries(parameter,mini,increment,maxi)
-test.equal(res.up,false,"Error at test 1.1. Expected up = false. But up = "+res.up)
-test.equal(res.down,true,"Error at test 1.1. Expected down = true. But down = "+res.down)
+test.equal(res.up,false,"Error at test 1.3. Expected up = false. But up = "+res.up)
+test.equal(res.down,true,"Error at test 1.3. Expected down = true. But down = "+res.down)
 //Test 1.4 Expected false false
 var parameter=0.3
 var mini=0.25
 increment=0.1
 maxi=0.35
 res=checkBoundaries(parameter,mini,increment,maxi)
-test.equal(res.up,false,"Error at test 1.1. Expected up = false. But up = "+res.up)
-test.equal(res.down,false,"Error at test 1.1. Expected down = false. But down = "+res.down)
+test.equal(res.up,false,"Error at test 1.4. Expected up = false. But up = "+res.up)
+test.equal(res.down,false,"Error at test 1.4. Expected down = false. But down = "+res.down)
 /**
 Test 2. Function valids()
 */
-
+//Test 2.1 Expected [4,1,7]
+expected=[4,1,7]
+obtained=valids(0.1,0.05,0.05,0.35,0.2,0.09,0.5,0.4)
+test.deepEqual(obtained,expected,"Error at test 2.1. Expected "+expected+". But obtained "+obtained)
+//Test 2.2 Expected [4,1,2,5]
+expected=[4,1,2,5]
+obtained=valids(0.05,0.03,0.1,0.35,0.3,0.1,0.01,0.3)
+test.deepEqual(obtained,expected,"Error at test 2.2. Expected "+expected+". But obtained "+obtained)
+//Test 2.3 Expected [4,0,1,2,3,5,6,7,8]
+expected=[4,0,1,2,3,5,6,7,8]
+obtained=valids(0.2,0.03,0.1,0.35,0.2,0.1,0.01,0.3)
+test.deepEqual(obtained,expected,"Error at test 2.3. Expected "+expected+". But obtained "+obtained)
+//Test 2.4 Expected [4]
+expected=[4]
+obtained=valids(0.1,0.1,0.1,0.1,0.2,0.2,0.2,0.2)
+test.deepEqual(obtained,expected,"Error at test 2.4. Expected "+expected+". But obtained "+obtained)
 //------------------------------------------------------------------------------
 /**
 Test 3. Function chooseParameters()
 */
+//chooseParameters(aa,incrementAA, L, t, incrementT, c, valids)
+//Test 3.1 Expected a decrement of aa
+aa=0.1,minAA=0.05,incrementAA=0.05,maxAA=0.35,t=0.1,minT=0.09,incrementT=0.5,maxT=0.4,c=1,L=5
+obtained=chooseParameters(aa,incrementAA, L, t, incrementT, c, valids(aa,minAA,incrementAA,maxAA,t,minT,incrementT,maxT))
+expected=aa-incrementAA
+test.equal(obtained.aa,expected,"Error at test 3.1.1. Expected "+expected+". But obtained "+obtained.aa)
+expected=t
+test.equal(obtained.t,expected,"Error at test 3.1.2. Expected "+expected+". But obtained "+obtained.t)
+//Test 3.2 Expected a decrement of t
+aa=0.05,minAA=0.03,incrementAA=0.1,maxAA=0.35,t=0.3,minT=0.1,incrementT=0.01,maxT=0.3,c=1,L=5
+obtained=chooseParameters(aa,incrementAA, L, t, incrementT, c, valids(aa,minAA,incrementAA,maxAA,t,minT,incrementT,maxT))
+expected=aa
+test.equal(obtained.aa,expected,"Error at test 3.2.1. Expected "+expected+". But obtained "+obtained.aa)
+expected=t-incrementT
+test.equal(obtained.t,expected,"Error at test 3.2.2. Expected "+expected+". But obtained "+obtained.t)
+//Test 3.3 Expected a decrement of aa and t
+aa=0.2,minAA=0.03,incrementAA=0.1,maxAA=0.35,t=0.2,minT=0.1,incrementT=0.01,maxT=0.3,c=1,L=5
+obtained=chooseParameters(aa,incrementAA, L, t, incrementT, c, valids(aa,minAA,incrementAA,maxAA,t,minT,incrementT,maxT))
+expected=aa-incrementAA
+test.equal(obtained.aa,expected,"Error at test 3.3.1. Expected "+expected+". But obtained "+obtained.aa)
+expected=t-incrementT
+test.equal(obtained.t,expected,"Error at test 3.3.2. Expected "+expected+". But obtained "+obtained.t)
+//Test 3.4 Expected false, as there is not possible to increment or decrement the parameters
+aa=0.1,minAA=0.1,incrementAA=0.1,maxAA=0.1,t=0.2,minT=0.2,incrementT=0.2,maxT=0.2,c=1,L=5
+obtained=chooseParameters(aa,incrementAA, L, t, incrementT, c, valids(aa,minAA,incrementAA,maxAA,t,minT,incrementT,maxT))
+expected=false
+test.equal(obtained,expected,"Error at test 3.4.1. Expected "+expected+". But obtained "+obtained.aa)
 
 //------------------------------------------------------------------------------
 /**
 Test 4. Function step()
 */
+//Test 4.1
+log={"L":5,"__v":0,"_id":"551306435a4177651e142623","chord":3,"status":false,"date":"2015-02-25T19:02:27.568Z","iterations":[{"iteration":1,"value":6.552574171177686,"t":0.97,"aa":0.95,"_id":"551306435a4177651e142624"}]}
+chord=log.chord
+incrementAA = 0.05;
+incrementT = 0.01*log.chord;
+//Test 4.1.1 Expected finished=false
+newlog=JSON.parse(step(log))
+expected=undefined
+obtained=newlog.finish
+test.equal(obtained,expected,"Error at test 4.1.1. Expected "+expected+". But obtained "+obtained)
+//Test 4.1.2 Expected aa to decrease
+newlog=JSON.parse(step(log))
+//previous iteration
+expected=newlog.iterations[newlog.iterations.length-2].aa-incrementAA
+//last iteration
+obtained=newlog.iterations[newlog.iterations.length-1].aa
+test.equal(obtained,expected,"Error at test 4.1.2. Expected "+expected+". But obtained "+obtained)
+//Test 4.1.3 Expected t to decrease
+newlog=JSON.parse(step(log))
+//previous iteration
+expected=newlog.iterations[newlog.iterations.length-2].t-incrementT
+//last iteration
+obtained=newlog.iterations[newlog.iterations.length-1].t
+test.equal(obtained,expected,"Error at test 4.1.3. Expected "+expected+". But obtained "+obtained)
+//Test 4.2 Expected finish=true
+log={"L":5,"__v":0,"_id":"551306435a4177651e142623","chord":3,"status":false,"date":"2015-02-25T19:02:27.568Z","iterations":[{"iteration":1,"value":41.552574171177686,"t":0.3,"aa":0.1,"_id":"551306435a4177651e142624"}]}
+chord=log.chord
+incrementAA = 0.05;
+incrementT = 0.01*log.chord;
+
+newlog=JSON.parse(step(log))
+expected=true
+obtained=newlog.finish
+test.equal(obtained,expected,"Error at test 4.2. Expected "+expected+". But obtained "+obtained)
+
+
+
 
 //------------------------------------------------------------------------------
-/**
-Test 5. Function calculateLiftToDragRatio()
-*/
+
 
 
 /*******************************************************************************
@@ -70,7 +147,7 @@ function checkBoundaries(parameter, min, increment, max) {
 	var down = (parameter-increment >= min);
 	return { up: up, down: down};
 }
-
+/** Check what combinations of increments/decrements can be performed to the variables */
 function valids(aa,minAA,incrementAA,maxAA,t,minT,incrementT,maxT) {
 	var valids = new Array();
 	valids.push(4);
@@ -104,7 +181,7 @@ function valids(aa,minAA,incrementAA,maxAA,t,minT,incrementT,maxT) {
 	return valids;
 }
 
-/** Calculate the maximum between incresing the parameters, decreasing the parameters or doing nothing 
+/** Calculate which increases/decreases of the variables give the maximum ratio.
 * Boundaries -> { up: up, down: down}
 *	++ -> 0
 *	+0 -> 1
@@ -184,7 +261,7 @@ function step(log) {
 		/**Boundaries*/
 		var minAA = 0.1;
 		var incrementAA = 0.05;
-		var maxAA = Math.PI/2;
+		var maxAA = 0.35;
 		var minT = 0.1*log.chord;
 		var incrementT = 0.01*log.chord;
 		var maxT = 0.4*log.chord;
@@ -204,12 +281,10 @@ function step(log) {
 	 	}
 
 	 	var validsResult = valids(previousParameters.aa,minAA,incrementAA,maxAA,previousParameters.t,minT,incrementT,maxT);
-	 	console.log("After Valids:",validsResult);
 	 	var nextParameters = chooseParameters(previousParameters.aa,incrementAA,log.L,previousParameters.t,incrementT,log.chord,validsResult);
 	 	if(nextParameters) {
 		 	
 		 	nextParameters.iteration = 1+previousParameters.iteration;
-		 	console.log(nextParameters);
 		 	log.iterations.push(nextParameters);
 		 	return JSON.stringify(log);
 
