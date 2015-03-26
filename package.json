@@ -14,6 +14,7 @@
     "request": "^2.51.0",
     "jade": "~0.31.2",
     "zmq": "latest",
-    "q":"latest"
+    "q":"latest",
+    "priorityqueuejs":"latest"
   }
 }
