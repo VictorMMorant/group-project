@@ -69,8 +69,8 @@ angular.module('MyApp').controller('DetailsCtrl', function($scope, $auth,$http,$
           y: {type: 'linear', min: -1, max: 1, ticks: 10}
         },
         series: [
-          {y: 'value', color: 'steelblue', type: 'area', label: 'Upper Wing'},
-          {y: 'negValue', color: 'steelblue', type: 'area', label: 'Lower Wing' }
+          {y: 'value', color: 'steelblue', type: 'line', label: 'Upper Wing'},
+          {y: 'negValue', color: 'steelblue', type: 'line', label: 'Lower Wing' }
         ],
         lineMode: 'linear',
         tension: 0.7,
@@ -94,10 +94,16 @@ angular.module('MyApp').controller('DetailsCtrl', function($scope, $auth,$http,$
         var x = i;
         var upper = drawSymmetric(x,$scope.log.iterations[iterations.length-1].t,$scope.log.chord);
         var lower = -1*drawSymmetric(x,$scope.log.iterations[iterations.length-1].t,$scope.log.chord);
+	//Rotate aa radians
+	  var c=Math.cos($scope.log.iterations[iterations.length-1].aa*-1)
+	  var s=Math.sin($scope.log.iterations[iterations.length-1].aa*-1)
+	  x1=x*c-upper*s
+	  upper=x*s+upper*c
+	  lower=x*s+lower*c
         
 
         $scope.dataWing.push({
-          x : x, 
+          x : x1, 
           value: upper,
           negValue: lower});
 
