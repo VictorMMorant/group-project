@@ -3,6 +3,7 @@ angular.module('MyApp').controller('DetailsIterationCtrl', function($scope, $aut
       $scope.iteration = parseInt($stateParams.iteration);
       $scope.prevIteration = parseInt($stateParams.iteration)-1;
       $scope.nextIteration = parseInt($stateParams.iteration)+1;
+      $scope.dataWing = [];
       $scope.first = function() {
         return $scope.prevIteration !== 0;
       }
@@ -32,6 +33,25 @@ angular.module('MyApp').controller('DetailsIterationCtrl', function($scope, $aut
         drawDots: true,
         columnsHGap: 5
       }
+      
+      $scope.optionsWing = {
+        axes: {
+          x: {key: 'x', labelFunction: function(value) {return value;}, type: 'linear', ticks: 10},
+          y: {type: 'linear', min: -1, max: 1, ticks: 10},
+          y: {type: 'linear', min: -1, max: 1, ticks: 10},
+	  y: {type: 'linear', min: -1, max: 1, ticks: 10}
+        },
+        series: [
+          {y: 'value', color: 'steelblue', type: 'area', label: 'Upper Wing'},
+          {y: 'negValue', color: 'steelblue', type: 'area', label: 'Lower Wing' },
+	  {y: 'origin', color: 'steelblue', type: 'line', label: 'Origin' }
+        ],
+        lineMode: 'linear',
+        tension: 0.7,
+        tooltip: {mode: 'scrubber', formatter: function(x, y, series) {return series.label;}},
+        drawLegend: true,
+        columnsHGap: 5
+      }
 
       
       /** HTTP REQUESTS */
@@ -56,12 +76,19 @@ angular.module('MyApp').controller('DetailsIterationCtrl', function($scope, $aut
           var x = i;
           var upper = drawSymmetric(x,$scope.log.iterations[$scope.iteration].t,$scope.log.chord);
           var lower = -1*drawSymmetric(x,$scope.log.iterations[$scope.iteration].t,$scope.log.chord);
+	  //Rotate aa radians
+	  var c=Math.cos($scope.log.iterations[$scope.iteration].aa*-1)
+	  var s=Math.sin($scope.log.iterations[$scope.iteration].aa*-1)
+	  x1=x*c-upper*s
+	  upper=x*s+upper*c
+	  lower=x*s+lower*c
           
 
         $scope.dataWing.push({
-            x : x, 
+            x : x1, 
             value: upper,
-            negValue: lower});
+            negValue: lower,
+	    origin: 0});
 
         }
         $scope.currentT = Math.round($scope.log.iterations[$scope.iteration-1].t*100)/100;
