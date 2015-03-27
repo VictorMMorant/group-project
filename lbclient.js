@@ -134,7 +134,7 @@ mongoose.connection.on('error', function() {
 
 var app = express();
 
-app.set('port', process.env.PORT || 8000);
+app.set('port', process.env.PORT || process.argv[3]);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -324,4 +324,4 @@ uOplTk6inchw04t7ylWQ0aWFXPXGaHMCtIbmY+EV7QiIubwowuSqCSpPSnN38fDT\n\
 qVNwVtTM/pGfL421c7Ymf8TXDoXlVuNkMipx7SCTDkjhoSyGuj35WeYjcZHlrBMT\n\
 dVgRxW82icUC00xr0QBbwq3w9k3wg0pB6CHkEA==\n\
 -----END CERTIFICATE-----"
-    }, app).listen(8443);
+    }, app).listen(process.argv[4]);
