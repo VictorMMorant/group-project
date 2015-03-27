@@ -32,6 +32,7 @@ var requestF=reqOf(frontend).then(responseF);
 var requestB=reqOf(backend).then(responseB);
 
 function responseF(arguments) {
+  requestF=reqOf(frontend).then(responseF);
   // Note that separate message parts come as function arguments.
   var args = Array.apply(null, arguments);
   if(verbose){
@@ -50,10 +51,10 @@ function responseF(arguments) {
 	}
 	backend.send([worker.id,'',args[0],'',args[2]]);
   }
-  requestF=reqOf(frontend).then(responseF);
 }
   
 function responseB(arguments) {
+  requestB=reqOf(backend).then(responseB);
   var args = Array.apply(null, arguments);
   if(verbose){
     console.log('Received from worker:');
@@ -92,7 +93,6 @@ function responseB(arguments) {
     }
     backend.send([worker.id,'',msg[0],'',msg[2]]);
   }
-  requestB=reqOf(backend).then(responseB);
 }
 
 
@@ -109,7 +109,7 @@ setInterval( function (){
 			var tout =setTimeout(function(){
 				//Aquí desterramos al worker.
 				delete loadUrls[id];
-				//sock.removeAllListeners('message');
+				sock.removeAllListeners('message');
 				if(verbose) console.log('RIP '+id);
 			},secs/2*1000);
 			sock.once('message', function(msg) {
@@ -132,6 +132,7 @@ config.bind('tcp://*:'+process.argv[4]);
 var configRequest = reqOf(config).then(respConfig);
 
 function respConfig(arguments){
+	configRequest = reqOf(config).then(respConfig);
 	var args = Array.apply(null, arguments);
 	var msg=JSON.parse(args[0]);
 	if(msg.distribution=='equitable'){
@@ -142,7 +143,6 @@ function respConfig(arguments){
 		secs=msg.periodicity;
 		}
 	config.send(['OK']);
-	configRequest = reqOf(config).then(respConfig);
 }
 
 setInterval(function(){

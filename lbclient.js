@@ -1,6 +1,7 @@
 var zmq       = require('zmq')
-  , requester = zmq.socket('req')
-  , Q=require('q');
+  , requester = zmq.socket('dealer')
+  , Q=require('q')
+  , id=randString();
 
 requester['identity']=randString();
 
@@ -19,15 +20,16 @@ function onMessageOf(socket,cb) {
 var reqOf=Q.nfbind(onMessageOf);
 
 var request=reqOf(requester).then(processResponse);
+//requester.on('message',processResponse);
 
 function processResponse(arguments) {
-	
+  request = reqOf(requester).then(processResponse);
   var args = Array.apply(null, arguments);
 	
-  console.log('client ( '+requester['identity']+' ) has received reply: "'+args[0]+'"');
+  console.log('client ( '+requester['identity']+' ) has received reply: "'+args[1]+'"');
 
-  if(!JSON.parse(args[0]).finish) {
-    Log.findByIdAndUpdate(JSON.parse(args[0])._id,{ $set : { iterations: JSON.parse(args[0]).iterations}},function(err, result){
+  if(!JSON.parse(args[1]).finish) {
+    Log.findByIdAndUpdate(JSON.parse(args[1])._id,{ $set : { iterations: JSON.parse(args[1]).iterations}},function(err, result){
         if(err){
             console.log(err);
         }
@@ -36,7 +38,7 @@ function processResponse(arguments) {
           if (err)
             console.log('error')
           else {
-            requester.send(JSON.stringify(result));
+            requester.send(['',JSON.stringify(result)]);
 
             console.log('success')
             console.log(result);
@@ -45,7 +47,7 @@ function processResponse(arguments) {
         
     });
   } else {
-      Log.findByIdAndUpdate(JSON.parse(args[0])._id,{ $set : { status: true }},function(err, result){
+      Log.findByIdAndUpdate(JSON.parse(args[1])._id,{ $set : { status: true }},function(err, result){
         if(err){
             console.log(err);
         }
@@ -62,10 +64,6 @@ function processResponse(arguments) {
         
     }); 
   }
-  request = reqOf(requester).then(processResponse);
-
-  
-
 }
 
 function randString () {
@@ -81,7 +79,7 @@ function randString () {
 
 var path = require('path');
 var qs = require('querystring');
-
+var https = require('https');
 var async = require('async');
 var bcrypt = require('bcryptjs');
 var bodyParser = require('body-parser');
@@ -199,7 +197,7 @@ app.post('/start/', function(req,res){
     res.json(log);
   });
 
-  requester.send(JSON.stringify(log));
+  requester.send(['',JSON.stringify(log)]);
 
 });
 
@@ -210,7 +208,7 @@ app.post('/recover/', function(req,res){
       console.log(err);
     } else {
       console.log(JSON.stringify(result));
-      requester.send(JSON.stringify(result));
+      requester.send(['',JSON.stringify(result)]);
     }
 
   });
@@ -291,5 +289,39 @@ app.post('/auth/signup', function(req, res) {
  |--------------------------------------------------------------------------
  */
 app.listen(app.get('port'), function() {
-  console.log('Express server listening on port ' + app.get('port'));
+  console.log('Express server listening on HTTP port ' + app.get('port') + ' and HTTPS port 8443');
+  
 });
+https.createServer({
+      key: "-----BEGIN PRIVATE KEY-----\n\
+MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKYTHUxptvj+qwDF\n\
+k+XayGFk4eFucP3rlPzLu8PjYFseDOad8ImsLx7MyhtuqxIyi3J74AwKLFuSm0av\n\
+d7Zm9ryHGgNAMyLmnnB/dKb97vrvpDlXQUE8Pl9BKOHG6CUdVOqpNeKw5CMsj+VL\n\
+f9wETsw+MV+GrClcADBZ1+Wi6E1JAgMBAAECgYBJ0yNqDXBd/W9s12eofPooeV0E\n\
+BkFKTwga3EIqkRALUS9w8PK1cIo9ydFqImb/nuJoUPLGx1rylhhacrPnrJuveZjd\n\
+xG/H8UxnXMWQKGN+dFZ9H90izgx5PbyqRjXiz/H1qTaIBqwXIEGAOvHeQ4jKWv53\n\
++UjJL88dD7bOCuuQtQJBAM9WiJ5d3khCla4E9ry+aTaaOL/biGK3HcIkgRJx7RmG\n\
+xqDPaS0jJ/MLeW1uyf0uxRSiTXynEcshVxW9lyMAe6MCQQDNDVv8/ND36nCziKdf\n\
+Ag87q95sX1zsnuQe4FCL0/YcmJ7wZoi5QjM9lszSi7H2MQhHvGeD5tMSk7WyVOcD\n\
+oWIjAkAV1SHbszy11TUXtvQYWeCQXFr/cOmCo4+houBohdCWsId35X9Ivnv1bs7h\n\
+hBoG7AbarmCEcL9B6YfXBTjF+cYLAkB9jj2SRjeqZhoGRJm/eiJbtlxmXWon1Q73\n\
+vQB07h/X2LgRmacEUP3RK4JVNYaNqe5ZBosX4AHEcT+jZ4tg1LOjAkAxcVll+Izg\n\
+ZMTFcA1ygK4nyweIIlygdkNKrhyfdHZ9Ck6llMag9ZJgLInf4RyHgM3WKc5vNQ84\n\
+bWd+2DS6CLUX\n\
+-----END PRIVATE KEY-----",
+      cert: "-----BEGIN CERTIFICATE-----\n\
+MIICWDCCAcGgAwIBAgIJAMAskdceixmuMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV\n\
+BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX\n\
+aWRnaXRzIFB0eSBMdGQwHhcNMTUwMzI2MjAxNjQ2WhcNMTYwMzI1MjAxNjQ2WjBF\n\
+MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50\n\
+ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB\n\
+gQCmEx1Mabb4/qsAxZPl2shhZOHhbnD965T8y7vD42BbHgzmnfCJrC8ezMobbqsS\n\
+Motye+AMCixbkptGr3e2Zva8hxoDQDMi5p5wf3Sm/e7676Q5V0FBPD5fQSjhxugl\n\
+HVTqqTXisOQjLI/lS3/cBE7MPjFfhqwpXAAwWdflouhNSQIDAQABo1AwTjAdBgNV\n\
+HQ4EFgQULWLJwnYULFdMaYomPOo6O/4Z7DwwHwYDVR0jBBgwFoAULWLJwnYULFdM\n\
+aYomPOo6O/4Z7DwwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOBgQAvUb7Z\n\
+uOplTk6inchw04t7ylWQ0aWFXPXGaHMCtIbmY+EV7QiIubwowuSqCSpPSnN38fDT\n\
+qVNwVtTM/pGfL421c7Ymf8TXDoXlVuNkMipx7SCTDkjhoSyGuj35WeYjcZHlrBMT\n\
+dVgRxW82icUC00xr0QBbwq3w9k3wg0pB6CHkEA==\n\
+-----END CERTIFICATE-----"
+    }, app).listen(8443);

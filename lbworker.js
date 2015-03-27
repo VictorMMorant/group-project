@@ -23,22 +23,28 @@ var estadoRequest = reqOf(estado).then(respLoad);
 //estado.on('message',respLoad);
 
 function respLoad(){
+	estadoRequest = reqOf(estado).then(respLoad);
 	console.log("LOAD REQUESTED");
 	estado.send([getLoad()]);
-	estadoRequest = reqOf(estado).then(respLoad);
 }
 
 responder['identity']=workerID;
 
 responder.connect(url);
 if(verbose) console.log('worker ( '+workerID+' ) connected to '+url+' ...');
-responder.send([disp,getLoad(),'tcp://'+loadHost+':'+loadPort]);
-if(verbose) console.log('worker ( '+workerID+' ) has sent READY msg: "'+disp+'". Load in port: '+loadPort);
+
+function foo() {
+  responder.send([disp,getLoad(),'tcp://'+loadHost+':'+loadPort]);
+  if(verbose) console.log('worker ( '+workerID+' ) has sent READY msg: "'+disp+'". Load in port: '+loadPort);
+}
+
+process.nextTick(foo);
 
 var request=reqOf(responder).then(respWork); 
+//responder.on('message',respWork);
 
 function respWork(arguments) {
-	
+	request=reqOf(responder).then(respWork);	
 	var args = Array.apply(null, arguments);
 	var clientServed=args[0];
 	
@@ -53,7 +59,6 @@ function respWork(arguments) {
  	//console.log(response);
  	responder.send([clientServed,'',"Iteration",response]);
 
-	request=reqOf(responder).then(respWork);	
 	console.log('worker ( '+workerID+' ) has sent '+(++count)+' replies.');
 
   }
@@ -76,7 +81,14 @@ function showArguments(a) {
 
 
 function getLoad() {
-	return 10;
+	var fs = require('fs')//Este código está tal cual.
+	, data = fs.readFileSync("/proc/loadavg") //version sincrona
+	, tokens = data.toString().split(' ')
+	, min1 = parseFloat(tokens[0])+0.01
+	, min5 = parseFloat(tokens[1])+0.01
+	, min15 = parseFloat(tokens[2])+0.01
+	, m = min1*10 + min5*2 + min15;
+	return m;
 }
 
 /** Check the boundaries for a parameter */
@@ -201,10 +213,10 @@ function step(log) {
 
 		/**Boundaries*/
 		var minAA = 0.1;
-		var incrementAA = 0.05;
+		var incrementAA = 0.025;
 		var maxAA = 0.35;
 		var minT = 0.1*log.chord;
-		var incrementT = 0.01*log.chord;
+		var incrementT = 0.005*log.chord;
 		var maxT = 0.4*log.chord;
 
 		/* First time default parameters */
@@ -235,38 +247,6 @@ function step(log) {
 	 		log.finish = true;
 	 		return JSON.stringify(log);
 	 	}
-
-	 	/*Optimizer
-		* i -> angle of attack
-		* j -> thickness
-		*
-		if(previousParameters.aa <= maxAA) {
-			if(previousParameters.t+0.01*log.chord > maxT) {
-				previousParameters.t = 0;
-				previousParameters.aa+=0.1;
-			} else {
-				previousParameters.t += 0.01*log.chord;
-			}
-
-			//Step
-			previousParameters.value = calculateLiftToDragRatio(previousParameters.aa,log.L,previousParameters.t,log.chord);
-			previousParameters.iteration++;
-			log.iterations.push(previousParameters);
-			responder.send([clientServed,'',"Iteration",JSON.stringify(log)]);
-
-			if(verbose){
-			 	console.log('worker ( '+workerID+' ) has sent its reply:');
-			 	showArguments([clientServed,'',"Iteration",JSON.stringify(log)]);
-		 	}
-	
-		} else {
-			//Finish
-			responder.send([clientServed,'',"Iteration",JSON.stringify(log), "Finish"]);
-						if(verbose){
-			 	console.log('worker ( '+workerID+' ) has sent its reply:');
-			 	showArguments([clientServed,'',"Iteration",JSON.stringify(log), "Finish"]);
-		 	}
-		}*/
 
 }
 
